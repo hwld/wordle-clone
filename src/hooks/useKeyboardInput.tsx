@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useInputContext } from "../contexts/InputContext";
+import { isInputKey, useInputContext } from "../contexts/InputContext";
 
 export const useKeyboardInput = () => {
   const { input } = useInputContext();
@@ -10,7 +10,7 @@ export const useKeyboardInput = () => {
       if (pressedKeys.current.has(key)) {
         return;
       }
-      if (key === "Backspace" || key.match(/^[a-zA-Z]$/) || key === "Enter") {
+      if (isInputKey(key)) {
         input(key);
       }
       pressedKeys.current.add(key);

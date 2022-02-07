@@ -9,6 +9,9 @@ export const Game: React.FC = () => {
   useKeyboardInput();
 
   const handleChangeWord = (word: string, index: number) => {
+    if (word.length > 5) {
+      return;
+    }
     setWords((words) => {
       return words.map((w, i) => {
         if (i === index) {
@@ -29,10 +32,11 @@ export const Game: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen w-screen flex-col items-center justify-center bg-slate-800">
+    <div className="flex min-h-screen w-screen flex-col items-center justify-center bg-neutral-900">
       {[...new Array(count)].map((_, i) => {
         return (
           <GameRow
+            key={i}
             word={words[i]}
             row={i}
             currentRow={current}

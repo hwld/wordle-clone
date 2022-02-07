@@ -6,12 +6,24 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { isAlphabet } from "../types/alphabet";
+import { Alphabet } from "../utils";
 
-export type InputEvent = { key: string };
+const OTHERS = ["Backspace", "Enter"] as const;
+type Others = typeof OTHERS[number];
+type InputKey = Alphabet | Others;
+export const isInputKey = (value: unknown): value is InputKey => {
+  return (
+    typeof value === "string" &&
+    (isAlphabet(value) || OTHERS.includes(value as Others))
+  );
+};
+
+export type InputEvent = { key: InputKey };
 
 type InputContextValue = {
   inputEvent: Eventmitter<InputEvent>;
-  input: (value: string) => void;
+  input: (value: InputKey) => void;
 };
 
 const InputContext = createContext<InputContextValue>({
@@ -24,7 +36,7 @@ export const InputContextProvider: React.VFC<{
 }> = ({ children }) => {
   const [inputEvent] = useState(eventmit<InputEvent>());
 
-  const input = useCallback((key: string) => {
+  const input = useCallback((key: InputKey) => {
     inputEvent.emit({ key });
   }, []);
 
