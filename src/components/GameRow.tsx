@@ -1,73 +1,35 @@
-import { useEffect, useState } from "react";
-import { InputEvent, useInputContext } from "../contexts/InputContext";
-import { isAlphabet } from "../types/alphabet";
 import { GameTile } from "./GameTile";
 
 type GameRowProps = {
-  word: string;
+  rowData: { word: string } & (
+    | { isEnd: false }
+    | { isEnd: true; hits: number[]; blows: number[] }
+  );
   row: number;
   currentRow: number;
-  onChangeWord: (word: string, index: number) => void;
-  onNextRow: () => void;
 };
 
 export const GameRow: React.VFC<GameRowProps> = ({
-  word,
+  rowData,
   row,
   currentRow,
-  onChangeWord,
-  onNextRow,
 }) => {
-  const { inputEvent } = useInputContext();
-  const [miss, setMiss] = useState(false);
-
-  useEffect(() => {
-    const handleInput = ({ key }: InputEvent) => {
-      if (currentRow !== row) {
-        return;
-      }
-
-      if (key === "Backspace") {
-        onChangeWord(word.slice(0, -1), row);
-      } else if (key === "Enter") {
-        if (word.length === 5) {
-          onNextRow();
-        } else {
-          setMiss(true);
-        }
-      } else if (isAlphabet(key)) {
-        onChangeWord(word.concat(key.toUpperCase()), row);
-      }
-    };
-
-    inputEvent.on(handleInput);
-    return () => {
-      inputEvent.off(handleInput);
-    };
-  }, [word, currentRow]);
-
-  const handleAnimationEnd = ({ animationName }: React.AnimationEvent) => {
-    if (animationName === "shake") {
-      setMiss(false);
-    }
-  };
+  const hitOrBlows = rowData.isEnd ? rowData.hits.concat(rowData.blows) : [];
 
   return (
     <div className="flex">
       {[...new Array(5)].map((_, i) => {
         return (
-          <div
-            className={`${miss && "animate-shake"}`}
-            onAnimationEnd={handleAnimationEnd}
+          <GameTile
+            key={i}
+            className={`m-1
+              ${rowData.word[i] && "animate-pop"}
+              ${rowData.isEnd && rowData.hits.includes(i) && "bg-green-600"}
+              ${rowData.isEnd && rowData.blows.includes(i) && "bg-yellow-600"}
+              ${rowData.isEnd && !hitOrBlows.includes(i) && "bg-neutral-500"}`}
           >
-            <GameTile
-              key={i}
-              className={`m-1
-              ${word[i] && "animate-pop"}`}
-            >
-              {word[i]}
-            </GameTile>
-          </div>
+            {rowData.word[i]}
+          </GameTile>
         );
       })}
     </div>
