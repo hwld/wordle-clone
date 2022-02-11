@@ -18,33 +18,34 @@ export const GameRow: React.VFC<GameRowProps> = ({
 }) => {
   const oldWordRef = useRef(rowData.word);
   const [rowAnimations, setRowAnimation] = useState("animate-none");
-  const [animations, setAnimations] = useState(
+  const [tileAnimations, setTileAnimations] = useState(
     [...new Array(5)].map(() => "animate-none")
   );
-  const [styles, setStyles] = useState(
+  const [tileStyles, setTileStyles] = useState(
     [...new Array(5)].map(() => ({ css: "", border: true }))
   );
 
   const popTile = (index: number) => {
-    setAnimations(replaceElement(animations, index, "animate-pop"));
+    setTileAnimations(replaceElement(tileAnimations, index, "animate-pop"));
   };
 
   const shakeRow = () => {
     setRowAnimation("animate-shake");
   };
 
-  const flipIn = (index: number) => {
+  const flipInTile = (index: number) => {
     setTimeout(
-      () => setAnimations((as) => replaceElement(as, index, "animate-flipIn")),
+      () =>
+        setTileAnimations((as) => replaceElement(as, index, "animate-flipIn")),
       100 * index
     );
   };
 
-  const flipOut = (index: number) => {
-    setAnimations((animations) =>
+  const flipOutTile = (index: number) => {
+    setTileAnimations((animations) =>
       replaceElement(animations, index, "animate-flipOut")
     );
-    setStyles((colors) => {
+    setTileStyles((colors) => {
       return replaceElement(colors, index, (c) => {
         if (!rowData.isEnd) {
           return c;
@@ -59,20 +60,38 @@ export const GameRow: React.VFC<GameRowProps> = ({
     });
   };
 
-  const resetAnimation = (index: number) => {
-    setAnimations(replaceElement(animations, index, "animate-none"));
+  const resetTileAnimation = (index: number) => {
+    setTileAnimations(replaceElement(tileAnimations, index, "animate-none"));
   };
   const resetRowAnimation = () => {
     setRowAnimation("animate-none");
+  };
+
+  const handleTileAnimationEnd = (
+    { animationName }: React.AnimationEvent,
+    index: number
+  ) => {
+    if (animationName === "flipIn") {
+      flipOutTile(index);
+      return;
+    }
+    resetTileAnimation(index);
+  };
+
+  const handleRowAnimationEnd = ({
+    currentTarget,
+    target,
+  }: React.AnimationEvent) => {
+    if (currentTarget === target) {
+      resetRowAnimation();
+    }
   };
 
   // 文字が入力されたときにpopアニメーションを実行する
   useEffect(() => {
     const oldWord = oldWordRef.current;
     const newWord = rowData.word;
-    console.log("effect");
     if (oldWord < newWord) {
-      console.log("if");
       popTile(newWord.length - 1);
     }
     oldWordRef.current = rowData.word;
@@ -89,29 +108,9 @@ export const GameRow: React.VFC<GameRowProps> = ({
   // 単語の入力が有効だったときにflipInアニメーションを実行する
   useEffect(() => {
     if (rowData.isEnd) {
-      animations.forEach((_, i) => flipIn(i));
+      tileAnimations.forEach((_, i) => flipInTile(i));
     }
   }, [rowData.isEnd]);
-
-  const handleAnimationEnd = (
-    { animationName }: React.AnimationEvent,
-    index: number
-  ) => {
-    if (animationName === "flipIn") {
-      flipOut(index);
-      return;
-    }
-    resetAnimation(index);
-  };
-
-  const handleRowAnimationEnd = ({
-    currentTarget,
-    target,
-  }: React.AnimationEvent) => {
-    if (currentTarget === target) {
-      resetRowAnimation();
-    }
-  };
 
   return (
     <div
@@ -122,10 +121,10 @@ export const GameRow: React.VFC<GameRowProps> = ({
         return (
           <GameTile
             key={i}
-            className={`m-1 ${animations[i]} ${styles[i].css}`}
-            border={styles[i].border}
+            className={`m-0.5 ${tileAnimations[i]} ${tileStyles[i].css}`}
+            border={tileStyles[i].border}
             onAnimationEnd={(e) => {
-              handleAnimationEnd(e, i);
+              handleTileAnimationEnd(e, i);
             }}
           >
             {rowData.word[i]}
