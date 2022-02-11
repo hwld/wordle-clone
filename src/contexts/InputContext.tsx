@@ -6,8 +6,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import { isAlphabet } from "../types/alphabet";
-import { Alphabet } from "../utils";
+import { Alphabet, isAlphabet } from "../types/alphabet";
 
 const OTHERS = ["Backspace", "Enter"] as const;
 type Others = typeof OTHERS[number];
