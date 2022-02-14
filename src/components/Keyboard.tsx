@@ -1,8 +1,8 @@
 import { ReactNode, useCallback } from "react";
 import { InputEvent, useInputContext } from "../contexts/InputContext";
+import { GameState } from "../hooks/useGame";
 import { isAlphabet } from "../types/alphabet";
 import { KEYBOARD_LAYOUT } from "../utils/keyboard";
-import { GameState } from "./Game";
 import { Key, KeyStatus } from "./Key";
 
 const KeyRow: React.VFC<{ children: ReactNode }> = ({ children }) => {
