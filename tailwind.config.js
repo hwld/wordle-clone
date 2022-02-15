@@ -7,6 +7,7 @@ module.exports = {
         shake: "shake 600ms",
         flipIn: "flipIn 250ms ease-in",
         flipOut: "flipOut 250ms ease-in",
+        fade: "fade 250ms",
       },
       keyframes: {
         pop: {
@@ -26,6 +27,10 @@ module.exports = {
         flipOut: {
           "0%": { transform: "rotateX(-90deg)" },
           "100%": { transform: "rotateX(0)" },
+        },
+        fade: {
+          "0%": { opacity: 0 },
+          "100%": { opacity: 1 },
         },
       },
     },
