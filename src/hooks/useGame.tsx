@@ -26,6 +26,9 @@ const reducer: Reducer<GameState, GameAction> = (state, action) => {
 
   switch (action.type) {
     case "enter": {
+      if (state.isEnd) {
+        return state;
+      }
       if (isAlphabet(action.key)) {
         if (currentRow.word.length >= 5) {
           return state;
@@ -123,6 +126,8 @@ export const useGame = () => {
   const resetInvalid = () => {
     dispatch({ type: "resetInvalid" });
   };
+
+  const resetGame = () => {};
 
   useEffect(() => {
     const handleInput = ({ key }: InputEvent) => {

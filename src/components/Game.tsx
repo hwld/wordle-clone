@@ -46,8 +46,8 @@ export const Game: React.FC = () => {
       </div>
 
       <Modal isOpen={gameState.isEnd && isOpen} onClose={handleCloseResult}>
-        <p className="mb-6 text-9xl font-bold">
-          {gameState.isEnd && gameState.status}
+        <p className="mb-6 text-7xl font-bold">
+          {gameState.isEnd && gameState.status.toUpperCase()}
         </p>
       </Modal>
     </>

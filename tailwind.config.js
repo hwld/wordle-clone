@@ -7,7 +7,8 @@ module.exports = {
         shake: "shake 600ms",
         flipIn: "flipIn 250ms ease-in",
         flipOut: "flipOut 250ms ease-in",
-        fade: "fade 250ms",
+        fadeIn: "fadeIn 250ms",
+        fadeOut: "fadeOut 250ms",
       },
       keyframes: {
         pop: {
@@ -28,9 +29,13 @@ module.exports = {
           "0%": { transform: "rotateX(-90deg)" },
           "100%": { transform: "rotateX(0)" },
         },
-        fade: {
-          "0%": { opacity: 0 },
-          "100%": { opacity: 1 },
+        fadeIn: {
+          "0%": { transform: "translateY(300px)", opacity: 0 },
+          "100%": { transform: "translateY(0px)", opacity: 1 },
+        },
+        fadeOut: {
+          "0%": { transform: "translateY(0px)", opacity: 1 },
+          "100%": { transform: "translateY(600px)", opacity: 0 },
         },
       },
     },
