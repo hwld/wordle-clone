@@ -2,6 +2,7 @@ import { Reducer, useEffect, useReducer } from "react";
 import { InputEvent, useInputContext } from "../contexts/InputContext";
 import { isAlphabet } from "../types/alphabet";
 import { assertNever, replaceElement } from "../utils";
+import { getRandomWord, includeInWords } from "../utils/words";
 
 export type GameRowData = { word: string } & (
   | { isEnd: false }
@@ -16,16 +17,16 @@ export type GameState = {
 type GameAction =
   | { type: "enter"; key: InputEvent["key"] }
   | { type: "resetInvalid" }
-  | { type: "resetGame"; newAnswer: string };
+  | { type: "resetGame" };
 
 const reducer: Reducer<GameState, GameAction> = (state, action) => {
-  if (state.currentRow >= state.history.length) {
-    return state;
-  }
-  const currentRow = state.history[state.currentRow];
-
   switch (action.type) {
     case "enter": {
+      if (state.currentRow >= state.history.length) {
+        return state;
+      }
+      const currentRow = state.history[state.currentRow];
+
       if (state.isEnd) {
         return state;
       }
@@ -42,7 +43,7 @@ const reducer: Reducer<GameState, GameAction> = (state, action) => {
         };
         return newState;
       } else if (action.key === "Enter") {
-        if (currentRow.word.length < 5 /* ||　リストにない単語 */) {
+        if (currentRow.word.length < 5 || !includeInWords(currentRow.word)) {
           return { ...state, invalidRow: state.currentRow };
         }
         // TODO: 同じ文字があった場合にうまく行かない
@@ -101,7 +102,7 @@ const reducer: Reducer<GameState, GameAction> = (state, action) => {
       return { ...state, invalidRow: -1 };
     }
     case "resetGame": {
-      return state;
+      return initialState();
     }
     default: {
       return assertNever(action);
@@ -109,14 +110,19 @@ const reducer: Reducer<GameState, GameAction> = (state, action) => {
   }
 };
 
-export const useGame = () => {
-  const [gameState, dispatch] = useReducer(reducer, {
+const initialState = (): GameState => {
+  return {
     history: [...new Array(6)].map(() => ({ word: "", isEnd: false as const })),
     currentRow: 0,
     invalidRow: -1,
-    answer: "AUDIO",
+    answer: getRandomWord(),
     isEnd: false,
-  });
+  };
+};
+
+export const useGame = () => {
+  const [gameState, dispatch] = useReducer(reducer, initialState());
+  console.log(gameState.answer);
   const { inputEvent } = useInputContext();
 
   const enterKey = (key: InputEvent["key"]) => {
@@ -127,7 +133,9 @@ export const useGame = () => {
     dispatch({ type: "resetInvalid" });
   };
 
-  const resetGame = () => {};
+  const resetGame = () => {
+    dispatch({ type: "resetGame" });
+  };
 
   useEffect(() => {
     const handleInput = ({ key }: InputEvent) => {
@@ -140,5 +148,5 @@ export const useGame = () => {
     };
   }, []);
 
-  return { gameState, dispatch, enterKey, resetInvalid };
+  return { gameState, dispatch, enterKey, resetInvalid, resetGame };
 };

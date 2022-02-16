@@ -37,7 +37,7 @@ export const Modal: React.VFC<{
           onAnimationEnd={handleAnimationEnd}
         >
           <div
-            className={`${animation} relative flex h-80 w-80 items-center justify-center rounded-md bg-neutral-700 p-4 text-neutral-50`}
+            className={`${animation} relative flex h-80 w-80 flex-col items-center justify-center rounded-md bg-neutral-700 p-4 text-neutral-50`}
           >
             <button
               className="absolute top-1 right-1 flex h-8 w-8 items-center justify-center rounded-md bg-neutral-800 hover:bg-neutral-900"

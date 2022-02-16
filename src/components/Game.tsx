@@ -7,7 +7,7 @@ import { Keyboard } from "./Keyboard";
 import { Modal } from "./Modal";
 
 export const Game: React.FC = () => {
-  const { gameState, resetInvalid } = useGame();
+  const { gameState, resetInvalid, resetGame } = useGame();
   const [isOpen, setIsOpen] = useState(false);
   const count = 6;
   useKeyboardInput();
@@ -49,6 +49,12 @@ export const Game: React.FC = () => {
         <p className="mb-6 text-7xl font-bold">
           {gameState.isEnd && gameState.status.toUpperCase()}
         </p>
+        <button
+          className="rounded-md bg-green-600 py-2 px-4 text-xl font-bold"
+          onClick={resetGame}
+        >
+          Restart
+        </button>
       </Modal>
     </>
   );

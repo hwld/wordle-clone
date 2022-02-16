@@ -109,6 +109,9 @@ export const GameRow: React.VFC<GameRowProps> = ({
   useEffect(() => {
     if (rowData.isEnd) {
       tileAnimations.forEach((_, i) => flipInTile(i));
+    } else {
+      //行の情報がリセットされたときにはスタイルをリセットする
+      setTileStyles((ss) => ss.map(() => ({ css: "", border: true })));
     }
   }, [rowData.isEnd]);
 

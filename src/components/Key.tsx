@@ -16,16 +16,16 @@ export const Key: React.VFC<{
     const status = getKeyStatus(inputKey);
     switch (status) {
       case "hit": {
-        return "bg-green-700 hover:bg-green-600 active:bg-green-500";
+        return "bg-green-600 hover:bg-green-700 active:bg-green-800";
       }
       case "blow": {
-        return "bg-yellow-700 hover:bg-yellow-600 active:bg-yellow-500";
+        return "bg-yellow-600 hover:bg-yellow-700 active:bg-yellow-800";
       }
       case "absent": {
-        return "bg-neutral-700 hover:bg-neutral-600 active:bg-neutral-500";
+        return "bg-transparent border border-stone-500 hover:border-stone-600 active:border-stone-700";
       }
       case "unknown": {
-        return "bg-stone-700 hover:bg-stone-600 active:bg-stone-500";
+        return "bg-stone-600 hover:bg-stone-700 active:bg-stone-800";
       }
       default: {
         assertNever(status);
