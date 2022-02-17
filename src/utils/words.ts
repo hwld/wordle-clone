@@ -516,7 +516,6 @@ const words = [
   "HOTLY",
   "ICILY",
   "INFRA",
-  "INTL.",
   "JILDI",
   "JOLLY",
   "LAXLY",

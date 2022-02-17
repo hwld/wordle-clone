@@ -122,8 +122,8 @@ const initialState = (): GameState => {
 
 export const useGame = () => {
   const [gameState, dispatch] = useReducer(reducer, initialState());
-  console.log(gameState.answer);
   const { inputEvent } = useInputContext();
+  console.log(gameState.answer);
 
   const enterKey = (key: InputEvent["key"]) => {
     dispatch({ type: "enter", key });

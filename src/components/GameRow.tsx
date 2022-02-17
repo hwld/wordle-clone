@@ -9,20 +9,23 @@ type GameRowProps = {
   );
   invalid: boolean;
   onResetInvalid: () => void;
+  onAfterFlipOut?: () => void;
 };
 
 export const GameRow: React.VFC<GameRowProps> = ({
   rowData,
   invalid,
   onResetInvalid,
+  onAfterFlipOut = () => {},
 }) => {
   const oldWordRef = useRef(rowData.word);
   const [rowAnimations, setRowAnimation] = useState("animate-none");
+  const tileCnt = 5;
   const [tileAnimations, setTileAnimations] = useState(
-    [...new Array(5)].map(() => "animate-none")
+    [...new Array(tileCnt)].map(() => "animate-none")
   );
   const [tileStyles, setTileStyles] = useState(
-    [...new Array(5)].map(() => ({ css: "", border: true }))
+    [...new Array(tileCnt)].map(() => ({ css: "", border: true }))
   );
 
   const popTile = (index: number) => {
@@ -74,6 +77,9 @@ export const GameRow: React.VFC<GameRowProps> = ({
     if (animationName === "flipIn") {
       flipOutTile(index);
       return;
+    }
+    if (animationName === "flipOut" && index === tileCnt - 1) {
+      onAfterFlipOut();
     }
     resetTileAnimation(index);
   };
