@@ -48,7 +48,7 @@ export const Key: React.VFC<{
     <button
       className={`flex h-16 text-neutral-100 ${
         wide ? "w-20" : "w-12"
-      } select-none items-center justify-center rounded-[3px] text-lg font-bold duration-150 ${style} ${className}`}
+      } select-none items-center justify-center rounded-[3px] text-lg font-bold duration-200 ${style} ${className}`}
       onClick={handleClick}
     >
       {content}

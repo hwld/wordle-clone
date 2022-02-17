@@ -97,7 +97,7 @@ export const GameRow: React.VFC<GameRowProps> = ({
     oldWordRef.current = rowData.word;
   }, [rowData.word]);
 
-  // 単語の入力が無効だったときにshakeアニメーションを実行する
+  // 単語の入力が無効になったときにshakeアニメーションを実行する
   useEffect(() => {
     if (invalid) {
       shakeRow();
@@ -105,13 +105,16 @@ export const GameRow: React.VFC<GameRowProps> = ({
     }
   }, [invalid]);
 
-  // 単語の入力が有効だったときにflipInアニメーションを実行する
+  // 行データが確定したときにflipInアニメーションを実行
+  // 行データがリセットされたときにスタイル情報のリセットを実行
   useEffect(() => {
     if (rowData.isEnd) {
       tileAnimations.forEach((_, i) => flipInTile(i));
     } else {
-      //行の情報がリセットされたときにはスタイルをリセットする
-      setTileStyles((ss) => ss.map(() => ({ css: "", border: true })));
+      // isEndがtrue->falseになるのは行データがリセットされたときなので、スタイルをリセットする
+      setTileStyles((ss) =>
+        ss.map(() => ({ css: "duration-200", border: true }))
+      );
     }
   }, [rowData.isEnd]);
 
