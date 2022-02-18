@@ -4,16 +4,19 @@ import { isAlphabet } from "../types/alphabet";
 import { assertNever, replaceElement } from "../utils";
 import { getRandomWord, includeInWords } from "../utils/words";
 
-export type GameRowData = { word: string } & (
+export const LIMIT = 6;
+export const WORD_COUNT = 5;
+
+export type Answer = { word: string } & (
   | { isEnd: false }
   | { isEnd: true; hits: number[]; blows: number[]; absents: number[] }
 );
 export type GameState = {
-  history: GameRowData[];
-  currentRow: number;
-  invalidRow: number;
-  answer: string;
-} & ({ isEnd: false } | { isEnd: true; status: "win" | "lose" });
+  answers: Answer[];
+  currentAnswerIndex: number;
+  invalidAnswerIndex: number;
+  correctAnswer: string;
+} & ({ isGameEnd: false } | { isGameEnd: true; status: "win" | "lose" });
 type GameAction =
   | { type: "enter"; key: InputEvent["key"] }
   | { type: "resetInvalid" }
@@ -22,46 +25,53 @@ type GameAction =
 const reducer: Reducer<GameState, GameAction> = (state, action) => {
   switch (action.type) {
     case "enter": {
-      if (state.currentRow >= state.history.length) {
+      if (state.currentAnswerIndex >= state.answers.length || state.isGameEnd) {
         return state;
       }
-      const currentRow = state.history[state.currentRow];
+      const currentAnswer = state.answers[state.currentAnswerIndex];
 
-      if (state.isEnd) {
-        return state;
-      }
       if (isAlphabet(action.key)) {
-        if (currentRow.word.length >= 5) {
+        if (currentAnswer.word.length >= WORD_COUNT) {
           return state;
         }
         const newState: GameState = {
           ...state,
-          history: replaceElement(state.history, state.currentRow, (row) => ({
-            ...row,
-            word: row.word.concat(action.key.toUpperCase()),
-          })),
+          answers: replaceElement(
+            state.answers,
+            state.currentAnswerIndex,
+            (row) => ({
+              ...row,
+              word: row.word.concat(action.key.toUpperCase()),
+            })
+          ),
         };
         return newState;
       } else if (action.key === "Enter") {
-        if (currentRow.word.length < 5 || !includeInWords(currentRow.word)) {
-          return { ...state, invalidRow: state.currentRow };
+        if (
+          currentAnswer.word.length < WORD_COUNT ||
+          !includeInWords(currentAnswer.word)
+        ) {
+          return { ...state, invalidAnswerIndex: state.currentAnswerIndex };
         }
         // TODO: 同じ文字があった場合にうまく行かない
         const hits: number[] = [];
-        for (let i = 0; i < state.answer.length; i++) {
-          if (state.answer[i] === currentRow.word[i]) {
+        for (let i = 0; i < state.correctAnswer.length; i++) {
+          if (state.correctAnswer[i] === currentAnswer.word[i]) {
             hits.push(i);
           }
         }
         const blows: number[] = [];
-        for (let i = 0; i < state.answer.length; i++) {
-          if (!hits.includes(i) && state.answer.includes(currentRow.word[i])) {
+        for (let i = 0; i < state.correctAnswer.length; i++) {
+          if (
+            !hits.includes(i) &&
+            state.correctAnswer.includes(currentAnswer.word[i])
+          ) {
             blows.push(i);
           }
         }
 
         const absents: number[] = [];
-        for (let i = 0; i < currentRow.word.length; i++) {
+        for (let i = 0; i < currentAnswer.word.length; i++) {
           if (!hits.includes(i) && !blows.includes(i)) {
             absents.push(i);
           }
@@ -69,37 +79,45 @@ const reducer: Reducer<GameState, GameAction> = (state, action) => {
 
         const newState: GameState = {
           ...state,
-          history: replaceElement(state.history, state.currentRow, (row) => ({
-            ...row,
-            isEnd: true,
-            hits,
-            blows,
-            absents,
-          })),
-          currentRow: state.currentRow + 1,
-          answer: state.answer,
+          answers: replaceElement(
+            state.answers,
+            state.currentAnswerIndex,
+            (row) => ({
+              ...row,
+              isEnd: true,
+              hits,
+              blows,
+              absents,
+            })
+          ),
+          currentAnswerIndex: state.currentAnswerIndex + 1,
+          correctAnswer: state.correctAnswer,
         };
 
-        if (state.answer.length === hits.length) {
-          return { ...newState, isEnd: true, status: "win" };
-        } else if (state.currentRow === state.history.length - 1) {
-          return { ...newState, isEnd: true, status: "lose" };
+        if (state.correctAnswer.length === hits.length) {
+          return { ...newState, isGameEnd: true, status: "win" };
+        } else if (state.currentAnswerIndex === state.answers.length - 1) {
+          return { ...newState, isGameEnd: true, status: "lose" };
         } else {
           return newState;
         }
       } else if (action.key === "Backspace") {
         const newState: GameState = {
           ...state,
-          history: replaceElement(state.history, state.currentRow, (row) => ({
-            ...row,
-            word: row.word.slice(0, -1),
-          })),
+          answers: replaceElement(
+            state.answers,
+            state.currentAnswerIndex,
+            (row) => ({
+              ...row,
+              word: row.word.slice(0, -1),
+            })
+          ),
         };
         return newState;
       }
     }
     case "resetInvalid": {
-      return { ...state, invalidRow: -1 };
+      return { ...state, invalidAnswerIndex: -1 };
     }
     case "resetGame": {
       return initialState();
@@ -112,18 +130,21 @@ const reducer: Reducer<GameState, GameAction> = (state, action) => {
 
 const initialState = (): GameState => {
   return {
-    history: [...new Array(6)].map(() => ({ word: "", isEnd: false as const })),
-    currentRow: 0,
-    invalidRow: -1,
-    answer: getRandomWord(),
-    isEnd: false,
+    answers: [...new Array(LIMIT)].map(() => ({
+      word: "",
+      isEnd: false as const,
+    })),
+    currentAnswerIndex: 0,
+    invalidAnswerIndex: -1,
+    correctAnswer: getRandomWord(),
+    isGameEnd: false,
   };
 };
 
 export const useGame = () => {
   const [gameState, dispatch] = useReducer(reducer, initialState());
   const { inputEvent } = useInputContext();
-  console.log(gameState.answer);
+  console.log(gameState.correctAnswer);
 
   const enterKey = (key: InputEvent["key"]) => {
     dispatch({ type: "enter", key });

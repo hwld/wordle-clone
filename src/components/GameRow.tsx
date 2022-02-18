@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { WORD_COUNT } from "../hooks/useGame";
 import { replaceElement } from "../utils";
 import { GameTile } from "./GameTile";
 
@@ -20,12 +21,11 @@ export const GameRow: React.VFC<GameRowProps> = ({
 }) => {
   const oldWordRef = useRef(rowData.word);
   const [rowAnimations, setRowAnimation] = useState("animate-none");
-  const tileCnt = 5;
   const [tileAnimations, setTileAnimations] = useState(
-    [...new Array(tileCnt)].map(() => "animate-none")
+    [...new Array(WORD_COUNT)].map(() => "animate-none")
   );
   const [tileStyles, setTileStyles] = useState(
-    [...new Array(tileCnt)].map(() => ({ css: "", border: true }))
+    [...new Array(WORD_COUNT)].map(() => ({ css: "", border: true }))
   );
 
   const popTile = (index: number) => {

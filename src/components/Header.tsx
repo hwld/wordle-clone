@@ -15,7 +15,7 @@ export const Header: React.VFC<{
         <div className="h-10 w-10"></div>
         <p className="select-none text-3xl font-bold">Wordleeee</p>
         <div className="h-10 w-10">
-          {gameState.isEnd && (
+          {gameState.isGameEnd && (
             <button
               className="flex h-10 w-10 items-center justify-center rounded-md bg-neutral-700 text-stone-50 duration-150 hover:bg-stone-600 active:bg-stone-500"
               onClick={handleOpenResult}

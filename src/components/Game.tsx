@@ -11,7 +11,6 @@ export const Game: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isReset, setIsReset] = useState(false);
   const [isEnd, setIsEnd] = useState(false);
-  const count = 6;
   useKeyboardInput();
 
   const handleOpenResult = () => {
@@ -43,22 +42,22 @@ export const Game: React.FC = () => {
   };
 
   useEffect(() => {
-    if (gameState.isEnd) {
+    if (gameState.isGameEnd) {
       setIsEnd(true);
     }
-  }, [gameState.isEnd]);
+  }, [gameState.isGameEnd]);
 
   return (
     <>
       <div className="flex min-h-screen w-screen flex-col items-center justify-center bg-neutral-900">
         <Header gameState={gameState} onOpenResult={handleOpenResult} />
         <div className="flex flex-grow flex-col items-center justify-center">
-          {[...new Array(count)].map((_, i) => {
+          {gameState.answers.map((_, i) => {
             return (
               <GameRow
                 key={i}
-                rowData={gameState.history[i]}
-                invalid={gameState.invalidRow === i}
+                rowData={gameState.answers[i]}
+                invalid={gameState.invalidAnswerIndex === i}
                 onResetInvalid={() => resetInvalid()}
                 onAfterFlipOut={handleAfterFlipout}
               />
@@ -69,12 +68,12 @@ export const Game: React.FC = () => {
       </div>
 
       <Modal
-        isOpen={gameState.isEnd && isOpen}
+        isOpen={gameState.isGameEnd && isOpen}
         onClose={handleCloseResult}
         onAfterClose={handleAfterCloseDialog}
       >
         <p className="mb-6 text-7xl font-bold">
-          {gameState.isEnd && gameState.status.toUpperCase()}
+          {gameState.isGameEnd && gameState.status.toUpperCase()}
         </p>
         <button
           className="rounded-md bg-green-600 py-2 px-4 text-xl font-bold"

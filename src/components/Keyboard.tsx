@@ -25,7 +25,7 @@ export const Keyboard: React.VFC<{
       const hits: string[] = [];
       const blows: string[] = [];
       const absents: string[] = [];
-      for (let h of gameState.history) {
+      for (let h of gameState.answers) {
         if (h.isEnd) {
           hits.push(...h.hits.map((i) => h.word[i]));
           blows.push(...h.blows.map((i) => h.word[i]));
@@ -42,7 +42,7 @@ export const Keyboard: React.VFC<{
         return "unknown";
       }
     },
-    [gameState.history]
+    [gameState.answers]
   );
 
   return (
