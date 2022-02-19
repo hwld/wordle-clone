@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { RiDeleteBack2Fill } from "react-icons/ri";
 import { InputEvent } from "../contexts/InputContext";
+import { isAlphabet } from "../types/alphabet";
 import { assertNever } from "../utils";
 
 export type KeyStatus = "hit" | "blow" | "absent" | "unknown";
@@ -46,9 +47,9 @@ export const Key: React.VFC<{
 
   return (
     <button
-      className={`flex h-16 text-neutral-100 ${
-        wide ? "w-20" : "w-12"
-      } select-none items-center justify-center rounded-[3px] text-lg font-bold duration-200 ${style} ${className}`}
+      className={`flex h-14 ${
+        isAlphabet(inputKey) ? "w-8 flex-grow" : "w-12 flex-grow-[2]"
+      } select-none items-center justify-center rounded-[3px] text-lg font-bold text-neutral-100 duration-200 ${style} ${className}`}
       onClick={handleClick}
     >
       {content}

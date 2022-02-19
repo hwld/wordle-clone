@@ -2,6 +2,7 @@ import { HiOutlineDocumentReport } from "react-icons/hi";
 import { GameState } from "../hooks/useGame";
 
 export const Header: React.VFC<{
+  className?: string;
   gameState: GameState;
   onOpenResult: () => void;
 }> = ({ gameState, onOpenResult }) => {

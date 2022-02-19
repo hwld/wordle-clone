@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useGame } from "../hooks/useGame";
 import { useKeyboardInput } from "../hooks/useKeyboardInput";
-import { GameRow } from "./GameRow";
+import { GameBoard } from "./GameBoard";
 import { Header } from "./Header";
 import { Keyboard } from "./Keyboard";
-import { Modal } from "./Modal";
+import { ResultDialog } from "./ResultDialog";
 
 export const Game: React.FC = () => {
   const { gameState, resetInvalid, resetGame } = useGame();
@@ -48,40 +48,22 @@ export const Game: React.FC = () => {
   }, [gameState.isGameEnd]);
 
   return (
-    <>
-      <div className="flex min-h-screen w-screen flex-col items-center justify-center bg-neutral-900">
-        <Header gameState={gameState} onOpenResult={handleOpenResult} />
-        <div className="flex flex-grow flex-col items-center justify-center">
-          {gameState.answers.map((_, i) => {
-            return (
-              <GameRow
-                key={i}
-                rowData={gameState.answers[i]}
-                invalid={gameState.invalidAnswerIndex === i}
-                onResetInvalid={() => resetInvalid()}
-                onAfterFlipOut={handleAfterFlipout}
-              />
-            );
-          })}
-        </div>
-        <Keyboard className="mb-10" gameState={gameState} />
-      </div>
+    <div className="flex h-screen w-screen flex-col items-center justify-between bg-neutral-900">
+      <Header gameState={gameState} onOpenResult={handleOpenResult} />
+      <GameBoard
+        gameState={gameState}
+        onResetInvalid={() => resetInvalid()}
+        onAfterFlipOut={handleAfterFlipout}
+      />
+      <Keyboard className="mb-1 flex-shrink-0" gameState={gameState} />
 
-      <Modal
-        isOpen={gameState.isGameEnd && isOpen}
+      <ResultDialog
+        gameState={gameState}
+        isOpen={isOpen}
         onClose={handleCloseResult}
         onAfterClose={handleAfterCloseDialog}
-      >
-        <p className="mb-6 text-7xl font-bold">
-          {gameState.isGameEnd && gameState.status.toUpperCase()}
-        </p>
-        <button
-          className="rounded-md bg-green-600 py-2 px-4 text-xl font-bold"
-          onClick={handleResetGame}
-        >
-          Restart
-        </button>
-      </Modal>
-    </>
+        onResetGame={handleResetGame}
+      />
+    </div>
   );
 };

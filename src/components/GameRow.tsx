@@ -78,7 +78,8 @@ export const GameRow: React.VFC<GameRowProps> = ({
       flipOutTile(index);
       return;
     }
-    if (animationName === "flipOut" && index === tileCnt - 1) {
+    // 最後のタイルがflipOutしたらコールバックを呼び出す
+    if (animationName === "flipOut" && index === WORD_COUNT - 1) {
       onAfterFlipOut();
     }
     resetTileAnimation(index);
@@ -126,14 +127,14 @@ export const GameRow: React.VFC<GameRowProps> = ({
 
   return (
     <div
-      className={`flex ${rowAnimations}`}
+      className={`grid grid-cols-[repeat(5,1fr)] gap-1 ${rowAnimations}`}
       onAnimationEnd={handleRowAnimationEnd}
     >
       {[...new Array(5)].map((_, i) => {
         return (
           <GameTile
             key={i}
-            className={`m-0.5 ${tileAnimations[i]} ${tileStyles[i].css}`}
+            className={`${tileAnimations[i]} ${tileStyles[i].css}`}
             border={tileStyles[i].border}
             onAnimationEnd={(e) => {
               handleTileAnimationEnd(e, i);

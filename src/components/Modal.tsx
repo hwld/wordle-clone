@@ -40,7 +40,7 @@ export const Modal: React.VFC<{
   };
 
   return (
-    <div>
+    <>
       {innerIsOpen && (
         <div
           className={`fixed top-0 flex h-screen w-screen items-center justify-center bg-[rgba(0,0,0,0.5)]`}
@@ -60,6 +60,6 @@ export const Modal: React.VFC<{
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };

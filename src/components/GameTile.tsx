@@ -7,10 +7,10 @@ export const GameTile = forwardRef<
   return (
     <div
       ref={ref}
-      className={`flex h-16 w-16 items-center justify-center 
+      className={`flex h-full w-full items-center justify-center 
       ${border && "border-2"} 
       ${children ? "border-neutral-500" : "border-neutral-700"}
-      select-none pb-1 text-4xl font-bold  text-stone-50
+      select-none pb-1 text-3xl font-bold  text-stone-50
       ${className}`}
       {...props}
     >

@@ -5,9 +5,14 @@ import { isAlphabet } from "../types/alphabet";
 import { KEYBOARD_LAYOUT } from "../utils/keyboard";
 import { Key, KeyStatus } from "./Key";
 
-const KeyRow: React.VFC<{ children: ReactNode }> = ({ children }) => {
+const KeyRow: React.VFC<{ children: ReactNode; className?: string }> = ({
+  children,
+  className,
+}) => {
   return (
-    <div className="mb-2 flex w-full justify-center gap-2">{children}</div>
+    <div className={`mb-2 flex w-full justify-center gap-2 ${className}`}>
+      {children}
+    </div>
   );
 };
 
@@ -46,7 +51,7 @@ export const Keyboard: React.VFC<{
   );
 
   return (
-    <div className={`${className}`}>
+    <div className={`w-full max-w-[500px] ${className}`}>
       <KeyRow>
         {KEYBOARD_LAYOUT.first.map((key, i) => {
           return (
@@ -59,7 +64,7 @@ export const Keyboard: React.VFC<{
           );
         })}
       </KeyRow>
-      <KeyRow>
+      <KeyRow className="px-7">
         {KEYBOARD_LAYOUT.second.map((key, i) => {
           return (
             <Key
