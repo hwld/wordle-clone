@@ -11,10 +11,10 @@ export const Header: React.VFC<{
   };
 
   return (
-    <div className="h-12 w-full border-b border-stone-400 bg-neutral-800 text-neutral-100">
+    <div className="h-12 w-full border-b border-stone-400 bg-neutral-800 text-neutral-100 2xl:h-16">
       <div className="m-auto flex h-full max-w-xl items-center justify-between">
         <div className="h-10 w-10"></div>
-        <p className="select-none text-2xl font-bold">Wordleeee</p>
+        <p className="select-none text-3xl font-bold 2xl:text-4xl">Wordleeee</p>
         <div className="h-10 w-10">
           {gameState.isGameEnd && (
             <button
