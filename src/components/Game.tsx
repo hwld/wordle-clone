@@ -48,7 +48,7 @@ export const Game: React.FC = () => {
   }, [gameState.isGameEnd]);
 
   return (
-    <div className="flex h-screen w-screen flex-col items-center justify-between bg-neutral-900">
+    <div className="font-Righteous flex h-screen w-screen flex-col items-center justify-between bg-neutral-900">
       <Header gameState={gameState} onOpenResult={handleOpenResult} />
       <GameBoard
         gameState={gameState}

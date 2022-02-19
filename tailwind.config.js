@@ -2,6 +2,9 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        Righteous: ["Righteous"],
+      },
       animation: {
         pop: "pop 100ms",
         shake: "shake 600ms",
